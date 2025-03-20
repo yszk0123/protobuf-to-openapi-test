@@ -1,0 +1,22 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/yszk0123/protobuf-to-openapi-test/gen
+    except:
+      - buf.build/googleapis/googleapis
+plugins:
+  - name: ts
+    out: src/generated/openapi
+    path: ./node_modules/ts-proto/protoc-gen-ts_proto
+  - plugin: buf.build/grpc-ecosystem/openapiv2
+    out: src/generated/openapi
+    opt:
+      - generate_unbound_methods=true
+      - allow_merge=true
+      - merge_file_name=api
+  - name: ts
+    out: src/generated/protobuf
+    path: ./node_modules/@protobuf-ts/plugin/bin/protoc-gen-ts
+    opt:
+      - generate_dependencies

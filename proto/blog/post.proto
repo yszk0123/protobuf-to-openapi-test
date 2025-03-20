@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package blog;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/yszk0123/protobuf-to-openapi-test/gen/blog/v1;blogv1";
+
+service PostService {
+  rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {
+    option (google.api.http) = {
+      get: "/posts"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List posts"
+      description: "List all posts"
+      responses: {
+        key: "200"
+        value: {
+          description: "A list of posts"
+          schema: {
+            json_schema: { ref: ".blog.ListPostsResponse" }
+          }
+        }
+      }
+    };
+  }
+
+  rpc CreatePost(CreatePostRequest) returns (Post) {
+    option (google.api.http) = {
+      post: "/posts"
+      body: "*"
+    };
+  }
+
+  rpc UpdatePost(UpdatePostRequest) returns (Post) {
+    option (google.api.http) = {
+      put: "/posts/{post_id}"
+      body: "*"
+    };
+  }
+
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {
+    option (google.api.http) = {
+      delete: "/posts/{post_id}"
+    };
+  }
+}
+
+message Post {
+  string post_id = 1;
+  string title = 2;
+  string content = 3;
+  string created_at = 4;
+  string updated_at = 5;
+  optional string description = 6;
+}
+
+message ListPostsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListPostsResponse {
+  repeated Post posts = 1;
+  string next_page_token = 2;
+}
+
+message CreatePostRequest {
+  string title = 1;
+  string content = 2;
+}
+
+message UpdatePostRequest {
+  string post_id = 1;
+  string title = 2;
+  string content = 3;
+}
+
+message DeletePostRequest {
+  string post_id = 1;
+}
+
+message DeletePostResponse {}
